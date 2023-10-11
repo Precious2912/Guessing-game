@@ -27,15 +27,23 @@
                 {
                     Console.WriteLine("Incorrect guess.");
 
-                    for (int i = 0; i < Math.Min(userGuess.Length, secretWord.Length); i++)
+                    for (int i = 0; i < secretWord.Length; i++)
                     {
-                        if (i < secretWord.Length && userGuess[i] == secretWord[i])
+                        bool foundMatch = false; //keep track for match
+
+                        for (int j = 0; j < userGuess.Length; j++)
                         {
-                            Console.Write(userGuess[i]);
+                            if (userGuess[j] == secretWord[i])
+                            {
+                                foundMatch = true;
+                                Console.Write(userGuess[j]);
+                                break;
+                            }
                         }
-                        else
+
+                        if(!foundMatch)
                         {
-                            Console.Write("_ ");
+                            Console.Write("_");
                         }
                     }
                 }

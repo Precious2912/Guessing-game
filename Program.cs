@@ -27,23 +27,35 @@
                 {
                     Console.WriteLine("Incorrect guess.");
 
+                    HashSet<char> displayedchar = new();
+
                     for (int i = 0; i < secretWord.Length; i++)
                     {
-                        bool foundMatch = false; //keep track for match
-
-                        for (int j = 0; j < userGuess.Length; j++)
-                        {
-                            if (userGuess[j] == secretWord[i])
-                            {
-                                foundMatch = true;
-                                Console.Write(userGuess[j]);
-                                break;
-                            }
-                        }
-
-                        if(!foundMatch)
+                        //ensure it's only one occurence printed to the console
+                        if (displayedchar.Contains(secretWord[i]))
                         {
                             Console.Write("_");
+                        }
+                        else
+                        {
+                            bool foundMatch = false; //keep track for match
+
+                            for (int j = 0; j < userGuess.Length; j++)
+                            {
+                                if (userGuess[j] == secretWord[i])
+                                {
+                                    foundMatch = true;
+                                    displayedchar.Add(secretWord[i]);
+                                    Console.Write(secretWord[i]);
+                                    break; //Move the next iteration
+                                }
+                            }
+
+                            if (!foundMatch)
+                            {
+                                Console.Write("_");
+                            }
+
                         }
                     }
                 }

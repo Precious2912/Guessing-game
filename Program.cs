@@ -5,7 +5,25 @@
         static void Main(string[] args)
         {
             //Declaring variables
-            string secretWord = "studyt";
+            List<string> secretWords = new List<string>
+            {
+                "Programming",
+                "Conumdrum",
+                "Palindrome",
+                "Cipher",
+                "Mystery",
+                "Study",
+                "Correct",
+                "Guess",
+                "Loop",
+                "Wrong"
+            };
+
+            //generate random index to select a random secret word
+            Random random = new Random();
+            int randomIndex = random.Next(secretWords.Count);
+
+            string secretWord = secretWords[randomIndex].ToLower();
             int maxAttempts = 3;
             int remainingAttempts = maxAttempts;
 

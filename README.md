@@ -13,9 +13,9 @@ This is a console application implemented in C# for a simple word-guessing game.
 4. The game will provide feedback if any of the characters in your guess match any character in the secret word.
 5. You have 3 attempts.
 
+## Contributing
+Contributions are welcome! Please open an issue or submit a pull request.
+
 ## Example 
 ```bash
 $ dotnet run
-
-
-

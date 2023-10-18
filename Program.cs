@@ -5,68 +5,124 @@
         static void Main(string[] args)
         {
             //Declaring variables
-            string secretWord = "programming";
+            string secretWord = "studyt";
             int maxAttempts = 3;
             int remainingAttempts = maxAttempts;
 
-            Console.WriteLine("Welcome to the Word Guessing Game!");
             Console.WriteLine($"You have {maxAttempts} attempts to guess the secret word");
 
-            while ( remainingAttempts > 0 )
+            while (remainingAttempts > 0 )
             {
                 Console.Write($"Attempt {maxAttempts - remainingAttempts + 1} of {maxAttempts}. Enter a guess: ");
-                string userGuess = Console.ReadLine();
+                string userGuess = GetUserInput();
 
                 if (userGuess == secretWord)
                 {
-                    Console.WriteLine("Congrats!. You guessed the correct word");
+                    DisplaySuccessMessage("Congrats!. You guessed the correct word");
                     break;
                 }
+
                 //Display the correct letters in the correct position to streamline options for the user
                 else
                 {
-                    Console.WriteLine("Incorrect guess.");
-
-                    HashSet<char> displayedchar = new();
-
-                    for (int i = 0; i < secretWord.Length; i++)
+                    if (remainingAttempts > 1)
                     {
-                        //ensure it's only one occurence printed to the console
-                        if (displayedchar.Contains(secretWord[i]))
+                        DisplayFailureMessage("Incorrect guess. Try again");
+                         
+                        List<CharInfo> CharList = new List<CharInfo>();
+                        GetCharList(CharList, userGuess, secretWord);
+
+                        if(CharList.Count > 0)
                         {
-                            Console.Write("_");
-                        }
-                        else
-                        {
-                            bool foundMatch = false; //keep track for match
-
-                            for (int j = 0; j < userGuess.Length; j++)
-                            {
-                                if (userGuess[j] == secretWord[i])
-                                {
-                                    foundMatch = true;
-                                    displayedchar.Add(secretWord[i]);
-                                    Console.Write(secretWord[i]);
-                                    break; //Move the next iteration
-                                }
-                            }
-
-                            if (!foundMatch)
-                            {
-                                Console.Write("_");
-                            }
-
+                            DisplayHint(secretWord, CharList);
+                            Console.WriteLine(); //New line for clarity sake.
                         }
                     }
+
+                    remainingAttempts--;
+
+                    if (remainingAttempts > 0)
+                    {
+                        DisplayWarningMessage($"You have {remainingAttempts} attempt(s) left");
+                    }
+                    else
+                    {
+                        DisplayFailureMessage($"You have used up all your attempts. The secret word was: {secretWord}");
+                    }
                 }
-
-                Console.WriteLine(); //New line for clarity sake.
-                remainingAttempts--;
-
-                Console.WriteLine(remainingAttempts > 0 ? $"You have {remainingAttempts} attempt(s) left" : $"You have used up all your attempts. The secret word was: {secretWord}");
-
             }
 
+            Console.WriteLine("Thank you for playing!");
+
+            static string GetUserInput()
+            {
+                return Console.ReadLine().ToLower();
+            }
+
+            static void DisplaySuccessMessage(string message)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(message);
+                Console.ResetColor();
+            }
+
+            static void DisplayFailureMessage(string message)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(message);
+                Console.ResetColor();
+            }
+
+            static void DisplayWarningMessage(string message)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(message);
+                Console.ResetColor();
+            }
+
+            static void DisplayHint(string secretWord, List<CharInfo> charList)
+            {
+                for (int i = 0; i < secretWord.Length; i++)
+                {
+                    if (charList.Any(x => x.Character == secretWord[i] && x.Index == i))
+                    {
+                        Console.BackgroundColor = ConsoleColor.Green;
+                        Console.Write(secretWord[i]);
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.Write('_');
+                        Console.ResetColor();
+                    }
+                }
+            }
+
+            static void GetCharList(List<CharInfo> list, string userGuess, string secretWord)
+            {
+                List<int> indexes = new List<int>();
+
+                foreach (var character in userGuess)
+                {
+                    int secretWordIndex = !indexes.Contains(secretWord.IndexOf(character)) ? secretWord.IndexOf(character) : secretWord.LastIndexOf(character);
+
+                    if (!indexes.Contains(secretWordIndex) && secretWordIndex != -1)
+                    {
+                        //keep track of indexes to display multiple occurence of a characters
+                        indexes.Add(secretWordIndex);
+                    }
+
+                    //check if character and it's index already exists
+                    bool indexExists = list.Any(x => x.Index == secretWordIndex);
+
+                    if (secretWordIndex != -1 && !indexExists)
+                    {
+                        //keep track of all characters and their indexes
+                        list.Add(new CharInfo { Character = character, Index = secretWordIndex });
+                    }
+                }
+            }
         }
     }
 }
